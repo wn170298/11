@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Expenses API Demo</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; margin: 24px; }
+    label { display: block; margin-top: 8px; }
+    input, button { padding: 6px 8px; margin-top: 4px; }
+    pre { background:#f6f6f6; padding:12px; border-radius:6px; }
+  </style>
+</head>
+<body>
+  <h1>Expenses API (demo)</h1>
+
+  <form id="form">
+    <label>Amount: <input type="number" step="0.01" name="amount" required></label>
+    <label>Description: <input type="text" name="description" required></label>
+    <label>Category: <input type="text" name="category" required></label>
+    <label>Date: <input type="date" name="date" required></label>
+    <button type="submit">Add Expense</button>
+  </form>
+
+  <h2>All expenses</h2>
+  <button id="refresh">Refresh list</button>
+  <pre id="output">[]</pre>
+
+  <script>
+    const api = '/api/expenses';
+    const out = document.getElementById('output');
+
+    async function fetchAll() {
+      const res = await fetch(api);
+      const j = await res.json();
+      out.textContent = JSON.stringify(j, null, 2);
+    }
+
+    document.getElementById('refresh').addEventListener('click', fetchAll);
+
+    document.getElementById('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const body = {
+        amount: fd.get('amount'),
+        description: fd.get('description'),
+        category: fd.get('category'),
+        date: fd.get('date')
+      };
+      const res = await fetch(api, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const j = await res.json();
+      alert(JSON.stringify(j));
+      fetchAll();
+    });
+
+    // initial load
+    fetchAll();
+  </script>
+</body>
+</html>
