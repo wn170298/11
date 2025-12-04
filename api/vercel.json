@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/expenses.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/expenses", "dest": "/api/expenses.js" }
+  ]
+}
